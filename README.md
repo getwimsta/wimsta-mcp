@@ -1,5 +1,7 @@
 # WIMSTA MCP server
 
+[![npm](https://img.shields.io/npm/v/wimsta-mcp)](https://www.npmjs.com/package/wimsta-mcp) [![getwimsta/wimsta-mcp MCP server](https://glama.ai/mcp/servers/getwimsta/wimsta-mcp/badges/score.svg)](https://glama.ai/mcp/servers/getwimsta/wimsta-mcp)
+
 Evidence-based body calculators for AI assistants. Ask Claude, Cursor or any
 [MCP](https://modelcontextprotocol.io) client for your BMI, body-fat %, calorie needs or max heart
 rate and get **a range across published formulas, not one made-up number**, with the formulas,
