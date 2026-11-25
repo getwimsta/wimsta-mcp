@@ -2,16 +2,21 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.getwimsta/wimsta",
   "title": "WIMSTA body calculators",
-  "description": "BMI, body fat %, BMR, TDEE, max heart rate, waist-to-height as ranges across published formulas.",
-  "repository": { "url": "https://github.com/getwimsta/wimsta-mcp", "source": "github" },
+  "description": "17 body & fitness calculators (BMI, body fat, TDEE, protein, VO2max…) as ranges across formulas.",
+  "repository": {
+    "url": "https://github.com/getwimsta/wimsta-mcp",
+    "source": "github"
+  },
   "websiteUrl": "https://wimsta.com/tools/#calculation-api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "wimsta-mcp",
-      "version": "1.0.0",
-      "transport": { "type": "stdio" }
+      "version": "1.1.0",
+      "transport": {
+        "type": "stdio"
+      }
     }
   ]
 }

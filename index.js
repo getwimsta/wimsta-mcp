@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// WIMSTA MCP server: evidence-based body calculators (BMI, body fat, BMR, TDEE,
-// max heart rate, waist-to-height) and the open WIMSTA formula registry.
+// WIMSTA MCP server: 17 evidence-based body and fitness calculators (BMI, body fat, BMR, TDEE,
+// ideal weight, protein, water, max heart rate, VO2max, one-rep max, running pace…) and the open WIMSTA formula registry.
 // Every number comes from the public WIMSTA Calculation API (https://wimsta.com/tools/#calculation-api),
 // so results always match the calculators on wimsta.com. No API key, no tracking.
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
@@ -43,7 +43,7 @@ const cm = (lo, hi, what) => z.number().min(lo).max(hi).optional().describe(`${w
 
 const server = new McpServer({ name: 'wimsta', version });
 
-const NOTE = ' Returns a range across several published formulas (not one number), the formulas used with links, and a medical disclaimer. Estimates, not diagnoses.';
+const NOTE = ' Returns a range across several published formulas (not one number), the formulas used with links, page_url (the matching calculator page on wimsta.com, worth sharing with the user), and a medical disclaimer. Estimates, not diagnoses.';
 
 server.registerTool('bmi', {
   title: 'BMI (range)',
@@ -96,6 +96,75 @@ server.registerTool('waist_to_height', {
   description: 'Waist-to-height ratio (a measurement, not an estimate) with the Ashwell zone and the healthy waist range for the given height. Includes a medical disclaimer.',
   inputSchema: { waist_cm: z.number().min(45).max(160).describe('Natural waist, centimetres'), height_cm: height },
 }, async (a) => asResult(await call('/api/calc/waist-to-height', a)));
+
+const bf = z.number().min(3).max(65).describe('Body-fat %');
+const tool = (name, title, description, inputSchema, path) =>
+  server.registerTool(name, { title, description, inputSchema }, async (a) => asResult(await call(path, a)));
+
+tool('ideal_weight', 'Ideal body weight (range)',
+  'Ideal body weight as a range across seven classic formulas (Hamwi, Devine, Robinson, Miller, Broca, Lorentz, Peterson) plus the WHO healthy-weight range for the height.' + NOTE,
+  { sex, height_cm: height }, '/api/calc/ideal-weight');
+
+tool('ffmi', 'Fat-Free Mass Index',
+  'Fat-Free Mass Index (lean mass for height), raw and normalized to 1.8 m, with a neutral descriptive band. Needs body-fat %.' + NOTE,
+  { sex, weight_kg: weight, height_cm: height, body_fat_pct: bf }, '/api/calc/ffmi');
+
+tool('body_surface_area', 'Body surface area (range)',
+  'Body surface area in m² as a range across eight formulas (Mosteller, Du Bois, Haycock, Gehan–George, Boyd, Fujimoto, Takahira, Schlich).' + NOTE,
+  { sex, weight_kg: weight, height_cm: height }, '/api/calc/bsa');
+
+tool('body_shape', 'Body shape type',
+  'Body-shape type (hourglass, pear, inverted triangle, rectangle, apple) from bust/chest, waist and hip ratios. A descriptive label, not a health verdict.',
+  { bust_cm: z.number().min(60).max(160).describe('Bust (chest for men), centimetres'), waist_cm: z.number().min(45).max(160).describe('Natural waist, centimetres'), hip_cm: z.number().min(60).max(180).describe('Hips, centimetres') },
+  '/api/calc/body-shape');
+
+tool('body_frame', 'Body frame size',
+  'Body-frame size (small / medium / large) from the height ÷ wrist ratio (Grant cut points). A rule of thumb, not a clinical measure.',
+  { sex, height_cm: height, wrist_cm: z.number().min(10).max(25).describe('Wrist circumference, centimetres') }, '/api/calc/body-frame');
+
+tool('protein', 'Daily protein (range)',
+  'Daily protein in g/day as bands: RDA minimum, active adults, deficit/muscle preservation, and per kg of lean mass when body-fat % is given.' + NOTE,
+  { weight_kg: weight, body_fat_pct: bf.optional() }, '/api/calc/protein');
+
+const flag = (what) => z.boolean().optional().describe(`Adds a fixed drinking-water bump for ${what}`);
+tool('water', 'Daily water intake (range)',
+  'Daily water need in ml and litres as a range across five authorities (IOM, WHO, EFSA, FNB, sports medicine), with optional lifestyle add-ons.' + NOTE,
+  {
+    sex, weight_kg: weight,
+    activity: z.enum(['sedentary', 'light', 'active', 'moderate', 'very', 'extra', 'extreme']).describe('Activity level'),
+    calorie_norm_kcal: z.number().min(800).max(6000).optional().describe('Daily calories, sharpens the FNB source'),
+    coffee: flag('coffee'), alcohol: flag('alcohol'), protein_diet: flag('a high-protein diet'), workouts: flag('workouts'),
+    hot_climate: flag('a hot climate'), pregnancy: flag('pregnancy'), breastfeeding: flag('breastfeeding'), illness: flag('illness'),
+  }, '/api/calc/water');
+
+tool('creatine', 'Creatine dose (range)',
+  'Creatine monohydrate dose from body weight: maintenance range (g/day) and the optional loading route, from the ISSN position stand. Not a prescription.',
+  { weight_kg: weight }, '/api/calc/creatine');
+
+tool('one_rep_max', 'One-rep max (range)',
+  'Estimated one-rep max as a range across Epley, Brzycki, Lombardi and Lander, the median, and a percent-of-1RM training table. Less precise above ~12 reps (flagged).',
+  { weight_lifted_kg: z.number().min(1).max(1000).describe('Weight lifted, kilograms'), reps: z.number().int().min(1).max(36).describe('Repetitions completed') },
+  '/api/calc/one-rep-max');
+
+tool('vo2max', 'VO2max estimate (range)',
+  'VO2max (ml/kg/min) as a range across the field methods you give data for: Uth heart-rate ratio, Cooper 12-minute run, Rockport 1-mile walk. Typically ±10–15% of a lab value.' + NOTE,
+  {
+    hr_rest_bpm: z.number().min(30).max(120).optional().describe('Resting heart rate (Uth; needs hr_max_bpm, or age + sex)'),
+    hr_max_bpm: z.number().min(120).max(230).optional().describe('Measured max heart rate (Uth)'),
+    cooper_m: z.number().min(600).max(5000).optional().describe('Metres covered in a 12-minute run (Cooper)'),
+    walk_min: z.number().min(5).max(60).optional().describe('Minutes to walk 1 mile (Rockport; also needs finish_hr_bpm, weight_kg, age, sex)'),
+    finish_hr_bpm: z.number().min(50).max(230).optional().describe('Heart rate at the end of the walk (Rockport)'),
+    weight_kg: weight.optional(), age: age.optional(), sex: sex.optional(),
+  }, '/api/calc/vo2max');
+
+tool('running_pace', 'Running pace, time, distance',
+  'Running pace solver: give any two of distance, time and pace to get the third plus speed. Optionally predicts a race time at another distance as a range (Riegel 1.06–1.08).',
+  {
+    distance_km: z.number().min(0.1).max(1000).optional().describe('Distance, km'),
+    time_min: z.number().min(0.5).max(6000).optional().describe('Time in decimal minutes, e.g. 25.5'),
+    pace_min_per_km: z.number().min(1).max(60).optional().describe('Pace in decimal minutes per km, e.g. 5.5'),
+    target_distance_km: z.number().min(0.1).max(1000).optional().describe('Predict a race time at this distance'),
+  }, '/api/calc/running-pace');
 
 server.registerTool('get_formula', {
   title: 'Look up a formula in the WIMSTA registry',

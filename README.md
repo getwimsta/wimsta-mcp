@@ -20,6 +20,17 @@ so they always match the calculators on [wimsta.com](https://wimsta.com). No API
 | `tdee` | Maintenance calories (TDEE) range for an activity level |
 | `max_heart_rate` | Max heart rate range across nine formulas + five training zones |
 | `waist_to_height` | Waist-to-height ratio, Ashwell zone, healthy waist range |
+| `ideal_weight` | Ideal body weight range across seven classic formulas + WHO healthy-weight range |
+| `ffmi` | Fat-Free Mass Index, raw and normalized, neutral band |
+| `body_surface_area` | Body surface area range across eight formulas |
+| `body_shape` | Body-shape type from bust, waist and hip ratios |
+| `body_frame` | Body-frame size from the height ÷ wrist ratio |
+| `protein` | Daily protein bands (RDA, active, preservation, lean-mass) |
+| `water` | Daily water range across five authorities, lifestyle add-ons |
+| `creatine` | Creatine maintenance and loading dose (ISSN) |
+| `one_rep_max` | One-rep max range across Epley, Brzycki, Lombardi, Lander + training table |
+| `vo2max` | VO2max range from Uth, Cooper and Rockport field tests |
+| `running_pace` | Pace / time / distance solver + Riegel race prediction range |
 | `get_formula` | One formula from the open [WIMSTA formula registry](https://wimsta.com/registry/) (CC BY 4.0): equation, citation, validation population, limitations |
 | `list_formulas` | Registry index, or all formulas of a category |
 

@@ -1,21 +1,53 @@
 {
   "name": "wimsta-mcp",
-  "version": "1.0.0",
-  "description": "MCP server for evidence-based body calculators: BMI, body fat %, BMR, TDEE, max heart rate and waist-to-height as honest ranges across published formulas, plus the open WIMSTA formula registry. No API key.",
+  "version": "1.1.0",
+  "description": "MCP server with 17 evidence-based body and fitness calculators: BMI, body fat %, BMR, TDEE, ideal weight, protein, water, max heart rate, VO2max, one-rep max, running pace and more, as honest ranges across published formulas, plus the open WIMSTA formula registry. No API key.",
   "mcpName": "io.github.getwimsta/wimsta",
   "type": "module",
-  "bin": { "wimsta-mcp": "index.js" },
+  "bin": {
+    "wimsta-mcp": "index.js"
+  },
   "main": "index.js",
-  "files": ["index.js", "README.md", "LICENSE"],
-  "engines": { "node": ">=18" },
+  "files": [
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
     "zod": "^4.0.0"
   },
-  "keywords": ["mcp", "model-context-protocol", "bmi", "body-fat", "bmr", "tdee", "calorie-calculator", "heart-rate", "fitness", "health", "nutrition"],
+  "keywords": [
+    "bmi",
+    "bmr",
+    "body-fat",
+    "calorie-calculator",
+    "creatine",
+    "fitness",
+    "health",
+    "heart-rate",
+    "ideal-weight",
+    "mcp",
+    "model-context-protocol",
+    "nutrition",
+    "one-rep-max",
+    "protein",
+    "running-pace",
+    "tdee",
+    "vo2max",
+    "water-intake"
+  ],
   "homepage": "https://wimsta.com/tools/#calculation-api",
-  "repository": { "type": "git", "url": "git+https://github.com/getwimsta/wimsta-mcp.git" },
-  "bugs": { "url": "https://github.com/getwimsta/wimsta-mcp/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getwimsta/wimsta-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/getwimsta/wimsta-mcp/issues"
+  },
   "author": "WIMSTA (https://wimsta.com)",
   "license": "MIT"
 }
