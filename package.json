@@ -1,0 +1,21 @@
+{
+  "name": "wimsta-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for evidence-based body calculators: BMI, body fat %, BMR, TDEE, max heart rate and waist-to-height as honest ranges across published formulas, plus the open WIMSTA formula registry. No API key.",
+  "mcpName": "io.github.getwimsta/wimsta",
+  "type": "module",
+  "bin": { "wimsta-mcp": "index.js" },
+  "main": "index.js",
+  "files": ["index.js", "README.md", "LICENSE"],
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.0.0"
+  },
+  "keywords": ["mcp", "model-context-protocol", "bmi", "body-fat", "bmr", "tdee", "calorie-calculator", "heart-rate", "fitness", "health", "nutrition"],
+  "homepage": "https://wimsta.com/tools/#calculation-api",
+  "repository": { "type": "git", "url": "git+https://github.com/getwimsta/wimsta-mcp.git" },
+  "bugs": { "url": "https://github.com/getwimsta/wimsta-mcp/issues" },
+  "author": "WIMSTA (https://wimsta.com)",
+  "license": "MIT"
+}
