@@ -8,7 +8,7 @@
     "source": "github"
   },
   "websiteUrl": "https://wimsta.com/tools/#calculation-api",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "packages": [
     {
       "registryType": "npm",
@@ -23,6 +23,22 @@
     {
       "type": "streamable-http",
       "url": "https://wimsta.com/mcp"
+    }
+  ],
+  "icons": [
+    {
+      "src": "https://wimsta.com/wimsta-icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    },
+    {
+      "src": "https://wimsta.com/favicon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": [
+        "any"
+      ]
     }
   ]
 }
