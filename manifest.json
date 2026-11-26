@@ -1,0 +1,53 @@
+{
+  "manifest_version": "0.3",
+  "name": "wimsta-mcp",
+  "display_name": "WIMSTA Health Calculators",
+  "version": "1.1.0",
+  "description": "MCP server with 17 evidence-based body and fitness calculators: BMI, body fat %, BMR, TDEE, ideal weight, protein, water, max heart rate, VO2max, one-rep max, running pace and more, as honest ranges across published formulas, plus the open WIMSTA formula registry. No API key.",
+  "author": {
+    "name": "getwimsta",
+    "url": "https://wimsta.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getwimsta/wimsta-mcp.git"
+  },
+  "homepage": "https://wimsta.com",
+  "support": "https://github.com/getwimsta/wimsta-mcp/issues",
+  "icon": "logo-400.png",
+  "server": {
+    "type": "node",
+    "entry_point": "index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/index.js"]
+    }
+  },
+  "tools": [
+    {"name": "bmi", "description": "BMI range: classic Quetelet + Trefethen \"new BMI\", WHO category"},
+    {"name": "body_fat", "description": "Body-fat % range across Deurenberg, CUN-BAE, US Navy, RFM, Covert Bailey, Gallagher category"},
+    {"name": "bmr", "description": "Basal metabolic rate range: Mifflin-St Jeor, Harris-Benedict 1984/1919, WHO/FAO, Katch-McArdle"},
+    {"name": "tdee", "description": "Maintenance calories (TDEE) range for an activity level"},
+    {"name": "max_heart_rate", "description": "Max heart rate range across nine formulas + five training zones"},
+    {"name": "waist_to_height", "description": "Waist-to-height ratio, Ashwell zone, healthy waist range"},
+    {"name": "ideal_weight", "description": "Ideal body weight range across seven classic formulas + WHO healthy-weight range"},
+    {"name": "ffmi", "description": "Fat-Free Mass Index, raw and normalized, neutral band"},
+    {"name": "body_surface_area", "description": "Body surface area range across eight formulas"},
+    {"name": "body_shape", "description": "Body-shape type from bust, waist and hip ratios"},
+    {"name": "body_frame", "description": "Body-frame size from the height / wrist ratio"},
+    {"name": "protein", "description": "Daily protein bands (RDA, active, preservation, lean-mass)"},
+    {"name": "water", "description": "Daily water range across five authorities, lifestyle add-ons"},
+    {"name": "creatine", "description": "Creatine maintenance and loading dose (ISSN)"},
+    {"name": "one_rep_max", "description": "One-rep max range across Epley, Brzycki, Lombardi, Lander + training table"},
+    {"name": "vo2max", "description": "VO2max range from Uth, Cooper and Rockport field tests"},
+    {"name": "running_pace", "description": "Pace / time / distance solver + Riegel race prediction range"},
+    {"name": "get_formula", "description": "One formula from the open WIMSTA formula registry (CC BY 4.0): equation, citation, validation population, limitations"},
+    {"name": "list_formulas", "description": "Registry index, or all formulas of a category"}
+  ],
+  "keywords": ["bmi", "bmr", "tdee", "body-fat", "fitness", "health", "calculators"],
+  "license": "MIT",
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {"node": ">=18.0.0"}
+  }
+}
