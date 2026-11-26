@@ -41,18 +41,22 @@ const height = z.number().min(100).max(250).describe('Height in centimetres');
 const age = z.number().int().min(18).max(100).describe('Age in years (adults only)');
 const cm = (lo, hi, what) => z.number().min(lo).max(hi).optional().describe(`${what}, centimetres`);
 
+const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
+
 const server = new McpServer({ name: 'wimsta', version });
 
 const NOTE = ' Returns a range across several published formulas (not one number), the formulas used with links, page_url (the matching calculator page on wimsta.com, worth sharing with the user), and a medical disclaimer. Estimates, not diagnoses.';
 
 server.registerTool('bmi', {
   title: 'BMI (range)',
+  annotations: { title: 'BMI (range)', ...RO },
   description: 'Body Mass Index as a range: classic Quetelet BMI and Trefethen "new BMI", with the WHO category.' + NOTE,
   inputSchema: { weight_kg: weight, height_cm: height },
 }, async (a) => asResult(await call('/api/calc/bmi', a)));
 
 server.registerTool('body_fat', {
   title: 'Body fat % (range)',
+  annotations: { title: 'Body fat % (range)', ...RO },
   description: 'Body-fat percentage as a range across every validated formula the given measurements allow (Deurenberg, CUN-BAE, US Navy, RFM, Covert Bailey), with the Gallagher category. Give as many optional measurements as you have.' + NOTE,
   inputSchema: {
     sex, height_cm: height,
@@ -72,12 +76,14 @@ const bmrShape = {
 
 server.registerTool('bmr', {
   title: 'Basal metabolic rate (range)',
+  annotations: { title: 'Basal metabolic rate (range)', ...RO },
   description: 'Basal metabolic rate in kcal/day as a range: Mifflin–St Jeor, Harris–Benedict 1984 and 1919, WHO/FAO, plus Katch–McArdle when body-fat % is given.' + NOTE,
   inputSchema: bmrShape,
 }, async (a) => asResult(await call('/api/calc/bmr', a)));
 
 server.registerTool('tdee', {
   title: 'Daily calorie needs / TDEE (range)',
+  annotations: { title: 'Daily calorie needs / TDEE (range)', ...RO },
   description: 'Total daily energy expenditure (maintenance calories, kcal/day) = the BMR range × an activity multiplier.' + NOTE,
   inputSchema: {
     ...bmrShape,
@@ -87,19 +93,21 @@ server.registerTool('tdee', {
 
 server.registerTool('max_heart_rate', {
   title: 'Maximum heart rate and training zones',
+  annotations: { title: 'Maximum heart rate and training zones', ...RO },
   description: 'Maximum heart rate (bpm) as a range across nine published formulas (Fox, Tanaka, Gulati, Gellish, Nes and others) plus five training zones.' + NOTE,
   inputSchema: { age, sex: sex.optional() },
 }, async (a) => asResult(await call('/api/calc/max-heart-rate', a)));
 
 server.registerTool('waist_to_height', {
   title: 'Waist-to-height ratio',
+  annotations: { title: 'Waist-to-height ratio', ...RO },
   description: 'Waist-to-height ratio (a measurement, not an estimate) with the Ashwell zone and the healthy waist range for the given height. Includes a medical disclaimer.',
   inputSchema: { waist_cm: z.number().min(45).max(160).describe('Natural waist, centimetres'), height_cm: height },
 }, async (a) => asResult(await call('/api/calc/waist-to-height', a)));
 
 const bf = z.number().min(3).max(65).describe('Body-fat %');
 const tool = (name, title, description, inputSchema, path) =>
-  server.registerTool(name, { title, description, inputSchema }, async (a) => asResult(await call(path, a)));
+  server.registerTool(name, { title, description, inputSchema, annotations: { title, ...RO } }, async (a) => asResult(await call(path, a)));
 
 tool('ideal_weight', 'Ideal body weight (range)',
   'Ideal body weight as a range across seven classic formulas (Hamwi, Devine, Robinson, Miller, Broca, Lorentz, Peterson) plus the WHO healthy-weight range for the height.' + NOTE,
@@ -168,12 +176,14 @@ tool('running_pace', 'Running pace, time, distance',
 
 server.registerTool('get_formula', {
   title: 'Look up a formula in the WIMSTA registry',
+  annotations: { title: 'Look up a formula in the WIMSTA registry', ...RO },
   description: 'Get one formula from the open WIMSTA formula registry (CC BY 4.0): equation, original study citation, population it was validated on, known limitations. Call list_formulas first to find ids.',
   inputSchema: { id: z.string().min(1).describe('Formula id, e.g. "cun-bae", "tanaka", "harris-benedict-1984"') },
 }, async ({ id }) => asResult(await call('/api/formulas', { id })));
 
 server.registerTool('list_formulas', {
   title: 'List formulas in the WIMSTA registry',
+  annotations: { title: 'List formulas in the WIMSTA registry', ...RO },
   description: 'List the formulas in the open WIMSTA formula registry (CC BY 4.0), optionally filtered by category. Without a category returns the index of ids and categories.',
   inputSchema: { category: z.string().optional().describe('Category to filter by, one of body-fat, body-fat-ranges, bmi, waist-to-height, max-heart-rate, bmr; omit for the full index') },
 }, async ({ category }) => asResult(await call('/api/formulas', { category })));
