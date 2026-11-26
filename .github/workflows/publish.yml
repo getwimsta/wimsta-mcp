@@ -1,0 +1,24 @@
+# Публикация в npm через trusted publishing (OIDC), без токенов и passkey.
+# Запуск: git tag vX.Y.Z && git push origin vX.Y.Z  (версия тега = version в package.json)
+# На npmjs.com → пакет → Settings → Trusted Publisher: GitHub Actions,
+# organization/user getwimsta, repository = этот репо, workflow = publish.yml.
+name: publish
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: tag = package.json version
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - run: npm ci --omit=dev || npm install --omit=dev
+      - run: npm publish --access public
