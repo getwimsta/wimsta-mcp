@@ -50,6 +50,20 @@ Claude Desktop / Claude Code / Cursor (`mcpServers` config):
 
 Claude Code: `claude mcp add wimsta -- npx -y wimsta-mcp`
 
+### No install: remote server
+
+Same tools, hosted at **`https://wimsta.com/mcp`** (Streamable HTTP, no key, no account, nothing stored):
+
+```json
+{
+  "mcpServers": {
+    "wimsta": { "type": "http", "url": "https://wimsta.com/mcp" }
+  }
+}
+```
+
+Claude Code: `claude mcp add --transport http wimsta https://wimsta.com/mcp` · Claude.ai / ChatGPT: add it as a custom connector with that URL.
+
 Requires Node.js 18+.
 
 ## Example
