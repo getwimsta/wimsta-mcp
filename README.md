@@ -87,3 +87,9 @@ professional medical advice. Talk to a doctor before acting on any result.
 ## License
 
 Code: MIT. Formula registry data: CC BY 4.0, cite as "WIMSTA (wimsta.com)".
+
+The formula registry is archived on Zenodo: [doi:10.5281/zenodo.24588774](https://doi.org/10.5281/zenodo.24588774)
+([how to cite](https://wimsta.com/registry/#how-to-cite)). The same formulas as standalone packages:
+[`wimsta-formulas` on npm](https://www.npmjs.com/package/wimsta-formulas) and
+[on PyPI](https://pypi.org/project/wimsta-formulas/), source and test vectors in
+[getwimsta/formulas](https://github.com/getwimsta/formulas).
